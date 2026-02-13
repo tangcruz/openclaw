@@ -48,7 +48,7 @@ describe("formatErrorMessage", () => {
   });
 
   it("falls back for circular objects", () => {
-    const obj: any = {};
+    const obj: Record<string, unknown> = {};
     obj.self = obj;
     expect(typeof formatErrorMessage(obj)).toBe("string");
   });
@@ -56,7 +56,7 @@ describe("formatErrorMessage", () => {
 
 describe("formatUncaughtError", () => {
   it("returns message for INVALID_CONFIG errors", () => {
-    const err: any = new Error("bad config");
+    const err = new Error("bad config") as Error & { code: string };
     err.code = "INVALID_CONFIG";
     expect(formatUncaughtError(err)).toBe("bad config");
   });
