@@ -9,18 +9,18 @@ const now = Date.now();
 
 describe("formatUsageWindowSummary", () => {
   it("returns null for error snapshot", () => {
-    expect(formatUsageWindowSummary({ error: "failed", windows: [] } as any)).toBeNull();
+    expect(formatUsageWindowSummary({ error: "failed", windows: [] } as unknown)).toBeNull();
   });
 
   it("returns null for no windows", () => {
-    expect(formatUsageWindowSummary({ windows: [] } as any)).toBeNull();
+    expect(formatUsageWindowSummary({ windows: [] } as unknown)).toBeNull();
   });
 
   it("formats single window", () => {
     const snapshot = {
       windows: [{ label: "daily", usedPercent: 30 }],
     };
-    const result = formatUsageWindowSummary(snapshot as any, { now });
+    const result = formatUsageWindowSummary(snapshot as unknown, { now });
     expect(result).toContain("daily");
     expect(result).toContain("70% left");
   });
@@ -32,7 +32,7 @@ describe("formatUsageWindowSummary", () => {
         { label: "monthly", usedPercent: 50 },
       ],
     };
-    const result = formatUsageWindowSummary(snapshot as any, { now });
+    const result = formatUsageWindowSummary(snapshot as unknown, { now });
     expect(result).toContain("daily");
     expect(result).toContain("monthly");
     expect(result).toContain("·");
@@ -45,7 +45,7 @@ describe("formatUsageWindowSummary", () => {
         { label: "monthly", usedPercent: 50 },
       ],
     };
-    const result = formatUsageWindowSummary(snapshot as any, { now, maxWindows: 1 });
+    const result = formatUsageWindowSummary(snapshot as unknown, { now, maxWindows: 1 });
     expect(result).toContain("daily");
     expect(result).not.toContain("monthly");
   });
@@ -53,14 +53,14 @@ describe("formatUsageWindowSummary", () => {
 
 describe("formatUsageSummaryLine", () => {
   it("returns null for empty providers", () => {
-    expect(formatUsageSummaryLine({ providers: [] } as any)).toBeNull();
+    expect(formatUsageSummaryLine({ providers: [] } as unknown)).toBeNull();
   });
 
   it("returns null when all providers have errors", () => {
     const summary = {
       providers: [{ displayName: "Claude", error: "oops", windows: [] }],
     };
-    expect(formatUsageSummaryLine(summary as any)).toBeNull();
+    expect(formatUsageSummaryLine(summary as unknown)).toBeNull();
   });
 
   it("formats provider with usage", () => {
@@ -72,7 +72,7 @@ describe("formatUsageSummaryLine", () => {
         },
       ],
     };
-    const result = formatUsageSummaryLine(summary as any, { now });
+    const result = formatUsageSummaryLine(summary as unknown, { now });
     expect(result).toContain("Claude");
     expect(result).toContain("60% left");
   });
@@ -80,7 +80,7 @@ describe("formatUsageSummaryLine", () => {
 
 describe("formatUsageReportLines", () => {
   it("returns fallback for no providers", () => {
-    const lines = formatUsageReportLines({ providers: [] } as any);
+    const lines = formatUsageReportLines({ providers: [] } as unknown);
     expect(lines[0]).toContain("no provider usage");
   });
 
@@ -88,7 +88,7 @@ describe("formatUsageReportLines", () => {
     const summary = {
       providers: [{ displayName: "Claude", error: "auth failed", windows: [] }],
     };
-    const lines = formatUsageReportLines(summary as any);
+    const lines = formatUsageReportLines(summary as unknown);
     expect(lines.some((l) => l.includes("auth failed"))).toBe(true);
   });
 
@@ -96,7 +96,7 @@ describe("formatUsageReportLines", () => {
     const summary = {
       providers: [{ displayName: "Claude", windows: [] }],
     };
-    const lines = formatUsageReportLines(summary as any);
+    const lines = formatUsageReportLines(summary as unknown);
     expect(lines.some((l) => l.includes("no data"))).toBe(true);
   });
 
@@ -110,7 +110,7 @@ describe("formatUsageReportLines", () => {
         },
       ],
     };
-    const lines = formatUsageReportLines(summary as any, { now });
+    const lines = formatUsageReportLines(summary as unknown, { now });
     expect(lines.some((l) => l.includes("Claude") && l.includes("Pro"))).toBe(true);
     expect(lines.some((l) => l.includes("75% left"))).toBe(true);
   });

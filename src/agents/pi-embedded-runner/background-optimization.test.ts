@@ -101,7 +101,7 @@ describe("checkBackgroundOptimization", () => {
         },
       },
     };
-    const result = checkBackgroundOptimization("custom-session", messages, cfg as any);
+    const result = checkBackgroundOptimization("custom-session", messages, cfg as unknown);
     expect(result.shouldOptimize).toBe(true);
   });
 });

@@ -79,7 +79,7 @@ describe("formatPortListener", () => {
 
 describe("formatPortDiagnostics", () => {
   it("reports free port", () => {
-    const lines = formatPortDiagnostics({ port: 80, status: "free" } as any);
+    const lines = formatPortDiagnostics({ port: 80, status: "free" } as unknown);
     expect(lines[0]).toContain("free");
   });
 
@@ -89,7 +89,7 @@ describe("formatPortDiagnostics", () => {
       status: "busy",
       listeners: [{ pid: 1, commandLine: "nginx" }],
       hints: ["Another process"],
-    } as any);
+    } as unknown);
     expect(lines[0]).toContain("already in use");
     expect(lines.length).toBeGreaterThan(1);
   });

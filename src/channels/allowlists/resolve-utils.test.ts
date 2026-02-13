@@ -54,31 +54,31 @@ describe("mergeAllowlist", () => {
 describe("summarizeMapping", () => {
   it("does nothing when both arrays are empty", () => {
     const log = vi.fn();
-    summarizeMapping("test", [], [], { log } as any);
+    summarizeMapping("test", [], [], { log } as unknown);
     expect(log).not.toHaveBeenCalled();
   });
 
   it("logs resolved entries", () => {
     const log = vi.fn();
-    summarizeMapping("Allowlist", ["alice", "bob"], [], { log } as any);
+    summarizeMapping("Allowlist", ["alice", "bob"], [], { log } as unknown);
     expect(log).toHaveBeenCalledWith("Allowlist resolved: alice, bob");
   });
 
   it("logs unresolved entries", () => {
     const log = vi.fn();
-    summarizeMapping("Allowlist", [], ["charlie"], { log } as any);
+    summarizeMapping("Allowlist", [], ["charlie"], { log } as unknown);
     expect(log).toHaveBeenCalledWith("Allowlist unresolved: charlie");
   });
 
   it("truncates to 6 items with count", () => {
     const log = vi.fn();
     const items = ["a", "b", "c", "d", "e", "f", "g", "h"];
-    summarizeMapping("Test", items, [], { log } as any);
+    summarizeMapping("Test", items, [], { log } as unknown);
     expect(log).toHaveBeenCalledWith("Test resolved: a, b, c, d, e, f (+2)");
   });
 
   it("handles runtime without log function", () => {
     // Should not throw
-    summarizeMapping("Test", ["alice"], [], {} as any);
+    summarizeMapping("Test", ["alice"], [], {} as unknown);
   });
 });

@@ -287,17 +287,13 @@ export async function runPreparedReply(
   // Warroom briefing (cached, ~5 min TTL; directives are chat-specific)
   const warroomBriefing = await buildWarroomBriefing(workspaceDir, sessionKey);
   // Narrative guide (cached, field-specific talking points + forbidden words)
-  const narrativeGuide = await buildNarrativeGuide(
-    workspaceDir,
-    sessionKey,
-    sessionEntry?.chatName ?? ctx.GroupSubject,
-  );
+  const narrativeGuide = await buildNarrativeGuide(workspaceDir, sessionKey, ctx.GroupSubject);
   // Proactive recall (cached, ~3 min TTL; queries Time Tunnel for relevant history)
   const recallContext = await buildProactiveRecall(
     workspaceDir,
     baseBodyFinal,
     sessionCtx.SenderName,
-    sessionEntry?.chatName ?? ctx.GroupSubject,
+    ctx.GroupSubject,
   );
   // Context atoms (cached, ~3 min TTL; vector-retrieved workspace knowledge)
   const contextAtomsText = await buildContextAtoms(
@@ -314,7 +310,7 @@ export async function runPreparedReply(
     ...(narrativeGuide ? [{ kind: "narrative-guide" as const, content: narrativeGuide }] : []),
     ...(recallContext ? [{ kind: "recall" as const, content: recallContext }] : []),
     ...(contextAtomsText ? [{ kind: "context-atoms" as const, content: contextAtomsText }] : []),
-    ...(threadStarterNote ? [{ kind: "thread-starter" as const, content: threadStarterNote }] : []),
+    ...(threadContextNote ? [{ kind: "thread-starter" as const, content: threadContextNote }] : []),
     ...(systemEventsBlock ? [{ kind: "system-event" as const, content: systemEventsBlock }] : []),
     ...(hintParts.abortHint ? [{ kind: "abort-hint" as const, content: hintParts.abortHint }] : []),
     { kind: "message-body" as const, content: baseBodyFinal },

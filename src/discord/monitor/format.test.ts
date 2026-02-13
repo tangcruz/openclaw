@@ -32,7 +32,7 @@ describe("resolveDiscordSystemLocation", () => {
       resolveDiscordSystemLocation({
         isDirectMessage: false,
         isGroupDm: false,
-        guild: { name: "My Server" } as any,
+        guild: { name: "My Server" } as unknown,
         channelName: "general",
       }),
     ).toBe("My Server #general");
@@ -69,25 +69,27 @@ describe("formatDiscordReactionEmoji", () => {
 
 describe("formatDiscordUserTag", () => {
   it("returns username#discriminator for non-zero discriminator", () => {
-    expect(formatDiscordUserTag({ username: "alice", discriminator: "1234" } as any)).toBe(
+    expect(formatDiscordUserTag({ username: "alice", discriminator: "1234" } as unknown)).toBe(
       "alice#1234",
     );
   });
 
   it("returns username for discriminator '0'", () => {
-    expect(formatDiscordUserTag({ username: "alice", discriminator: "0" } as any)).toBe("alice");
+    expect(formatDiscordUserTag({ username: "alice", discriminator: "0" } as unknown)).toBe(
+      "alice",
+    );
   });
 
   it("returns username when discriminator is empty", () => {
-    expect(formatDiscordUserTag({ username: "alice", discriminator: "" } as any)).toBe("alice");
+    expect(formatDiscordUserTag({ username: "alice", discriminator: "" } as unknown)).toBe("alice");
   });
 
   it("returns username when no discriminator", () => {
-    expect(formatDiscordUserTag({ username: "alice" } as any)).toBe("alice");
+    expect(formatDiscordUserTag({ username: "alice" } as unknown)).toBe("alice");
   });
 
   it("falls back to id when no username", () => {
-    expect(formatDiscordUserTag({ id: "999" } as any)).toBe("999");
+    expect(formatDiscordUserTag({ id: "999" } as unknown)).toBe("999");
   });
 });
 

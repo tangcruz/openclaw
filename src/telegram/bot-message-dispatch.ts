@@ -4,7 +4,7 @@ import type { RuntimeEnv } from "../runtime.js";
 import type { TelegramMessageContext } from "./bot-message-context.js";
 import type { TelegramBotOptions } from "./bot.js";
 import type { TelegramStreamMode, TelegramContext } from "./bot/types.js";
-import { resolveAgentDir } from "../agents/agent-scope.js";
+import { resolveAgentDir, resolveSessionAgentId } from "../agents/agent-scope.js";
 import {
   findModelInCatalog,
   loadModelCatalog,
@@ -293,7 +293,9 @@ export const dispatchTelegramMessage = async ({
               content: payload.text ?? "",
               mediaUrl: payload.mediaUrl,
               sessionKey: ctxPayload.SessionKey,
-              agentId: ctxPayload.AgentId,
+              agentId: ctxPayload.SessionKey
+                ? resolveSessionAgentId({ sessionKey: ctxPayload.SessionKey })
+                : undefined,
             },
           } as MessageSentHookEvent);
         }

@@ -1,12 +1,12 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { buildDirectoryCacheKey, DirectoryCache } from "./directory-cache.js";
 
 describe("buildDirectoryCacheKey", () => {
   it("builds key with all fields", () => {
     const key = buildDirectoryCacheKey({
-      channel: "telegram" as any,
+      channel: "telegram" as unknown,
       accountId: "main",
-      kind: "user" as any,
+      kind: "user" as unknown,
       source: "cache",
       signature: "sig1",
     });
@@ -15,8 +15,8 @@ describe("buildDirectoryCacheKey", () => {
 
   it("defaults accountId to 'default'", () => {
     const key = buildDirectoryCacheKey({
-      channel: "discord" as any,
-      kind: "channel" as any,
+      channel: "discord" as unknown,
+      kind: "channel" as unknown,
       source: "live",
     });
     expect(key).toBe("discord:default:channel:live:default");
@@ -24,9 +24,9 @@ describe("buildDirectoryCacheKey", () => {
 
   it("defaults signature to 'default'", () => {
     const key = buildDirectoryCacheKey({
-      channel: "slack" as any,
+      channel: "slack" as unknown,
       accountId: "a1",
-      kind: "user" as any,
+      kind: "user" as unknown,
       source: "cache",
       signature: null,
     });
@@ -35,8 +35,8 @@ describe("buildDirectoryCacheKey", () => {
 });
 
 describe("DirectoryCache", () => {
-  const cfg1 = { test: 1 } as any;
-  const cfg2 = { test: 2 } as any;
+  const cfg1 = { test: 1 } as unknown;
+  const cfg2 = { test: 2 } as unknown;
 
   it("stores and retrieves values", () => {
     const cache = new DirectoryCache<string>(60000);

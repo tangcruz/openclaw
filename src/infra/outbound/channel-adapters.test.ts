@@ -31,7 +31,7 @@ describe("getChannelMessageAdapter", () => {
   });
 
   it("returns default adapter for unknown channel", () => {
-    const adapter = getChannelMessageAdapter("unknown" as any);
+    const adapter = getChannelMessageAdapter("unknown" as unknown);
     expect(adapter.supportsEmbeds).toBe(false);
   });
 });
