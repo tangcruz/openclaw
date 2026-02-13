@@ -40,7 +40,7 @@ export function patchSpawnGlobally(): void {
     // Inject closeOnExec: true if not explicitly set
     const enhancedOptions = {
       ...actualOptions,
-      closeOnExec: (actualOptions as any)?.closeOnExec ?? true,
+      closeOnExec: (actualOptions as unknown as Record<string, unknown>)?.closeOnExec ?? true,
     };
 
     // Call original spawn with enhanced options
