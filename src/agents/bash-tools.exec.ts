@@ -476,9 +476,13 @@ async function runExecProcess(opts: {
     stdin = child.stdin;
   } else if (opts.usePty) {
     const { shell, args: shellArgs } = getShellConfig();
-    // WORKAROUND: Disable PTY on macOS - node-pty has issues on macOS causing EBADF after first spawn
-    // Use regular spawn with pipes instead
+    // WORKAROUND: Disable PTY on macOS - node-pty has issues on macOS causing EBADF after first spawn.
+    // Commands requiring TTY semantics will fall back to pipe-based stdio, which may not
+    // support interactive/TUI features. See: https://github.com/openclaw/openclaw/issues/XXXX
     if (process.platform === "darwin") {
+      logWarn(
+        "exec: PTY requested but disabled on macOS (EBADF workaround); using pipe-based spawn",
+      );
       const { child: spawned } = await spawnWithFallback({
         argv: [shell, ...shellArgs, opts.command],
         options: {

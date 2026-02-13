@@ -6,8 +6,12 @@
  */
 
 import { existsSync } from "fs";
+import { resolve } from "path";
 
-const TIME_TUNNEL_QUERY_PATH = "/app/workspace/hooks/time-tunnel/query.js";
+const TIME_TUNNEL_QUERY_PATH = resolve(
+  process.env.OPENCLAW_WORKSPACE || "/app/workspace",
+  "hooks/time-tunnel/query.js",
+);
 
 let timeTunnelModule: {
   getCrossChannelContext: (params: {

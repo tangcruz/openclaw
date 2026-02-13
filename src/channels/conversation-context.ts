@@ -8,8 +8,11 @@
 import { existsSync } from "fs";
 import { resolve } from "path";
 
-// Time Tunnel 查詢模塊的路徑（容器內）
-const TIME_TUNNEL_QUERY_PATH = "/app/workspace/hooks/time-tunnel/query.js";
+// Time Tunnel 查詢模塊的路徑（從 workspace 解析）
+const TIME_TUNNEL_QUERY_PATH = resolve(
+  process.env.OPENCLAW_WORKSPACE || "/app/workspace",
+  "hooks/time-tunnel/query.js",
+);
 
 // 緩存導入的模塊
 let timeTunnelModule: {

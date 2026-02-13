@@ -194,7 +194,11 @@ export interface InternalHookEvent {
 
 export type InternalHookHandler = (
   event: InternalHookEvent,
-) => Promise<void | ModelFailoverHookResult> | void | ModelFailoverHookResult;
+) =>
+  | Promise<void | ModelFailoverHookResult | ModelSelectHookResult>
+  | void
+  | ModelFailoverHookResult
+  | ModelSelectHookResult;
 
 /** Registry of hook handlers by event key */
 const handlers = new Map<string, InternalHookHandler[]>();
@@ -398,12 +402,18 @@ export async function triggerModelSelectHook(
     try {
       const handlerResult = await handler(event);
       if (handlerResult && typeof handlerResult === "object") {
-        const typed = handlerResult as ModelSelectHookResult;
-        result = {
-          overrideModel: typed.overrideModel ?? result?.overrideModel,
-          overrideCandidates: typed.overrideCandidates ?? result?.overrideCandidates,
-          prependCandidates: typed.prependCandidates ?? result?.prependCandidates,
-        };
+        const typed = handlerResult as Record<string, unknown>;
+        // Only merge if the result contains known ModelSelectHookResult fields
+        const hasSelectFields =
+          "overrideModel" in typed || "overrideCandidates" in typed || "prependCandidates" in typed;
+        if (hasSelectFields) {
+          const selectResult = handlerResult as ModelSelectHookResult;
+          result = {
+            overrideModel: selectResult.overrideModel ?? result?.overrideModel,
+            overrideCandidates: selectResult.overrideCandidates ?? result?.overrideCandidates,
+            prependCandidates: selectResult.prependCandidates ?? result?.prependCandidates,
+          };
+        }
       }
     } catch (err) {
       console.error(

@@ -113,6 +113,11 @@ export async function waitForInFlightCompletion(timeoutMs = 30000): Promise<{
   }
 
   return new Promise((resolve) => {
+    const cleanup = () => {
+      shutdownWaiters = [];
+      isShuttingDown = false;
+    };
+
     const timeoutId = setTimeout(() => {
       const remaining = inFlightRequests.size;
       if (remaining > 0) {
@@ -121,12 +126,14 @@ export async function waitForInFlightCompletion(timeoutMs = 30000): Promise<{
           log.warn(`  - abandoned: ${req.channel}:${req.chatId} "${req.messagePreview}"`);
         }
       }
+      cleanup();
       resolve({ completed: remaining === 0, remaining, timedOut: true });
     }, timeoutMs);
 
     // 如果已經沒有 pending 了
     if (inFlightRequests.size === 0) {
       clearTimeout(timeoutId);
+      cleanup();
       resolve({ completed: true, remaining: 0, timedOut: false });
       return;
     }
@@ -134,6 +141,7 @@ export async function waitForInFlightCompletion(timeoutMs = 30000): Promise<{
     // 等待所有請求完成
     shutdownWaiters.push(() => {
       clearTimeout(timeoutId);
+      cleanup();
       resolve({ completed: true, remaining: 0, timedOut: false });
     });
   });
