@@ -448,14 +448,19 @@ export async function triggerModelFailoverHook(
   for (const handler of allHandlers) {
     try {
       const handlerResult = await handler(event);
-      // Merge results if handler returns something
+      // Merge results if handler returns a failover-shaped object
       if (handlerResult && typeof handlerResult === "object") {
-        const typed = handlerResult;
-        result = {
-          allow: typed.allow ?? result?.allow,
-          vetoReason: typed.vetoReason ?? result?.vetoReason,
-          overrideTarget: typed.overrideTarget ?? result?.overrideTarget,
-        };
+        const typed = handlerResult as Record<string, unknown>;
+        const hasFailoverFields =
+          "allow" in typed || "vetoReason" in typed || "overrideTarget" in typed;
+        if (hasFailoverFields) {
+          const failoverResult = handlerResult as ModelFailoverHookResult;
+          result = {
+            allow: failoverResult.allow ?? result?.allow,
+            vetoReason: failoverResult.vetoReason ?? result?.vetoReason,
+            overrideTarget: failoverResult.overrideTarget ?? result?.overrideTarget,
+          };
+        }
       }
     } catch (err) {
       console.error(
